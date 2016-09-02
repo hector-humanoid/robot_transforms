@@ -1,3 +1,6 @@
+#ifndef robot_transforms_H
+#define robot_transforms_H
+
 #include <ros/ros.h>
 
 #include <moveit/robot_model_loader/robot_model_loader.h>
