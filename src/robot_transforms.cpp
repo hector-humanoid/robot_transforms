@@ -15,9 +15,12 @@ void RobotTransforms::init(const std::string &robot_description_param_name) {
         return;
     }
 
-    robot_model_loader_.reset(new robot_model_loader::RobotModelLoader(robot_model_loader::RobotModelLoader::Options(robot_description, robot_semantics)));
-    robot_model_ = robot_model_loader_->getModel();
-    robot_state_ptr_.reset(new robot_state::RobotState(robot_model_));
+    robot_model_loader::RobotModelLoader::Options options(robot_description, robot_semantics);
+    options.load_kinematics_solvers_ = false;
+    robot_model_loader_.reset(new robot_model_loader::RobotModelLoader(options));
+
+    robot_model_ptr_ = robot_model_loader_->getModel();
+    robot_state_ptr_.reset(new robot_state::RobotState(robot_model_ptr_));
     robot_state_ptr_->setToDefaultValues();
     root_transform_ = Eigen::Affine3d::Identity();
     initialized_ = true;
@@ -71,5 +74,38 @@ Eigen::Affine3d RobotTransforms::getTransform(std::string base_frame, std::strin
     if (!initialized_) return Eigen::Affine3d::Identity();
     return robot_state_ptr_->getGlobalLinkTransform(base_frame).inverse() * robot_state_ptr_->getGlobalLinkTransform(target_frame);
 }
+
+std::string RobotTransforms::getChildLink(std::string joint_name) {
+  moveit::core::JointModel * joint = robot_model_ptr_->getJointModel(joint_name);
+  if (joint == NULL) {
+    ROS_ERROR_STREAM("[robot_transforms] Can't find joint with name '" << joint_name << "'.");
+    return "";
+  }
+
+  const moveit::core::LinkModel * link = joint->getChildLinkModel();
+  if (link == NULL) {
+    ROS_ERROR_STREAM("[robot_transforms] joint had no child link (shouldn't never happen).");
+    return "";
+  }
+
+  return link->getName();
+}
+
+std::string RobotTransforms::getParentLink(std::string joint_name) {
+  moveit::core::JointModel * joint = robot_model_ptr_->getJointModel(joint_name);
+  if (joint == NULL) {
+    ROS_ERROR_STREAM("[robot_transforms] Can't find joint with name '" << joint_name << "'.");
+    return "";
+  }
+
+  const moveit::core::LinkModel * link = joint->getParentLinkModel();
+  if (link == NULL) {
+    ROS_ERROR_STREAM("[robot_transforms] joint had no parent link (shouldn't never happen).");
+    return "";
+  }
+
+  return link->getName();
+}
+
 
 }

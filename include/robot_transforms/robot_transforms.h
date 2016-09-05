@@ -72,6 +72,14 @@ namespace robot_tools {
          * @return Transformation matrix from base_frame to target_frame
          */
         Eigen::Affine3d getTransform(std::string base_frame, std::string target_frame);
+
+        /**
+         * @brief getChildLink Retrieves the child link name of a joint
+         * @param joint_name Name of the joint
+         * @return Returns child link name or an empty string if the joint wasn't found.
+         */
+        std::string getChildLink(std::string joint_name);
+        std::string getParentLink(std::string joint_name);
     private:
         /**
          * @brief Loads the model (robot_description, robot_description_semantic) from parameter server
@@ -80,7 +88,7 @@ namespace robot_tools {
         /**
          * @brief Stores the robot model
          */
-        robot_model::RobotModelPtr robot_model_;
+        robot_model::RobotModelPtr robot_model_ptr_;
         /**
          * @brief Stores the state of the robot and computes FK
          */
