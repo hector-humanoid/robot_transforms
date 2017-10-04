@@ -3,15 +3,15 @@
 namespace robot_tools {
 
 void RobotTransforms::init(const std::string &robot_description_param_name) {
-    ros::NodeHandle private_nh("~");
+    ros::NodeHandle nh;
     std::string robot_description;
-    if (!private_nh.getParam(robot_description_param_name, robot_description)) {
-        ROS_ERROR_STREAM("RobotTransforms couldn't find robot_description on " << robot_description_param_name <<". Init failed.");
+    if (!nh.getParam(robot_description_param_name, robot_description)) {
+        ROS_ERROR_STREAM("RobotTransforms couldn't find robot_description on " << nh.getNamespace() << "/" << robot_description_param_name <<". Init failed.");
         return;
     }
     std::string robot_semantics;
-    if (!private_nh.getParam(robot_description_param_name + "_semantic", robot_semantics)) {
-        ROS_ERROR_STREAM("RobotTransforms couldn't find robot_description_semantic on " << robot_description_param_name << "_semantic" <<". Init failed.");
+    if (!nh.getParam(robot_description_param_name + "_semantic", robot_semantics)) {
+        ROS_ERROR_STREAM("RobotTransforms couldn't find robot_description_semantic on " << nh.getNamespace() << "/" << robot_description_param_name << "_semantic" <<". Init failed.");
         return;
     }
 
