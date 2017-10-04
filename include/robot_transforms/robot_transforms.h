@@ -27,7 +27,7 @@ namespace robot_tools {
          * @param robot_description_param_name (optional) Specifies the location of the robot
          *                                     description on the parameter server.
          */
-        void init(const std::string& robot_description_param_name = "/robot_description");
+        void init(const std::string& robot_description_param_name = "robot_description");
 
         /**
          * @brief Updates multiple joint states at once
